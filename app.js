@@ -10,59 +10,92 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+let allEmployees = [];
+
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
-promptUser = () => 
-inquirer.prompt([
-    {
-        type: 'input', 
-        name: 'name', 
-        message: 'Please enter your name.'
-    },
-    {
-        type: 'input', 
-        name: 'id', 
-        message: 'Please enter your ID #.'
-    },
-    {
-        type: 'input', 
-        name: 'email', 
-        message: 'Please enter your email.'
-    },
-    {
-        type: 'input', 
-        name: 'list', 
-        message: 'Please enter your role.', 
-        choices: ['Intern', 'Engineer', 'Manager']
-    },
-    {
-        type: 'input',
-        name: 'school',
-        message: 'Please enter school name.',
-        when: (answers) => answers.role === "Intern"
-      },
-      {
-        type: 'input',
-        name: 'officeNumber',
-        message: 'Please enter manager office #.',
-        when: (answers) => answers.role === "Manager"
-      },
-      {
-        type: 'input',
-        name: 'github',
-        message: 'Please enter GitHub username.',
-        when: (answers) => answers.role === "Engineer"
-      },
-      {
-        type: 'list',
-        name: 'again',
-        message: 'Do you want to enter another employee?',
-        choices: ['Yes', 'No']
-    } 
+promptUser = () =>
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'Please enter your name.'
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Please enter your ID #.'
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'Please enter your email.'
+        },
+        {
+            type: 'input',
+            name: 'list',
+            message: 'Please enter your role.',
+            choices: ['Intern', 'Engineer', 'Manager']
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: 'Please enter school name.',
+            when: (answers) => answers.role === "Intern"
+        },
+        {
+            type: 'input',
+            name: 'office',
+            message: 'Please enter manager office #.',
+            when: (answers) => answers.role === "Manager"
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'Please enter GitHub username.',
+            when: (answers) => answers.role === "Engineer"
+        },
+        {
+            type: 'list',
+            name: 'addmore',
+            message: 'Do you want to enter another employee?',
+            choices: ['Yes', 'No']
+        }
 
-]);
+    ])
+        .then((answers) => {
+            console.log(JSON.stringify(answers, null, ' '));
+            switch (answers.role) {
+                case 'Intern':
+                    const intern = new Intern(answers.name, answers.id, answers.email, answers.school);
+                    allEmployees.push(intern);
+                    console.log(allEmployees);
+                    break;
+                case 'Engineer':
+                    const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github);
+                    allEmployees.push(engineer);
+                    console.log(allEmployees);
+                    break;
+                case 'Manager':
+                    const manager = new Manager(answers.name, answers.id, answers.email, asnwers.office);
+                    allEmployees.push(manager);
+                    console.log(allEmployees);
+                    break;
+                default:
+                    console.log("Invalid input value");
+            }
+            if (answers.addmore === 'Yes'){
+                promptUser();
+            } else {
+                const renderPage = render(allEmployees); 
+                fs.writeFile(outputPath, renderPage, (err) => {
+                    if (err) console.log(err)
+                    console.log("html successfully rendered")
+                })
+            }
+        })
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
