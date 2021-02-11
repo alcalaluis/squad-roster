@@ -21,41 +21,41 @@ promptUser = () =>
         {
             type: 'input',
             name: 'name',
-            message: 'Please enter your name.'
+            message: 'Please enter name of this employee.',
         },
         {
             type: 'input',
             name: 'id',
-            message: 'Please enter your ID #.'
+            message: 'Please enter your ID # of this employee.',
         },
         {
             type: 'input',
             name: 'email',
-            message: 'Please enter your email.'
+            message: 'Please enter email of this employee',
         },
         {
-            type: 'input',
-            name: 'list',
-            message: 'Please enter your role.',
-            choices: ['Intern', 'Engineer', 'Manager']
+            type: 'list',
+            name: 'role',
+            message: 'Please choose role for this employee.',
+            choices: ['Intern', 'Engineer', 'Manager'],
         },
         {
             type: 'input',
             name: 'school',
-            message: 'Please enter school name.',
+            message: 'Please enter school of intern.',
             when: (answers) => answers.role === "Intern"
         },
         {
             type: 'input',
             name: 'office',
-            message: 'Please enter manager office #.',
+            message: 'Please enter office # of manager.',
             when: (answers) => answers.role === "Manager"
         },
         {
             type: 'input',
             name: 'github',
-            message: 'Please enter GitHub username.',
-            when: (answers) => answers.role === "Engineer"
+            message: 'Please enter engineer GitHub username.',
+            when: (answers) => answers.role === "Engineer",
         },
         {
             type: 'list',
@@ -63,10 +63,11 @@ promptUser = () =>
             message: 'Do you want to enter another employee?',
             choices: ['Yes', 'No']
         }
-
     ])
+
+
         .then((answers) => {
-            console.log(JSON.stringify(answers, null, ' '));
+            console.log(JSON.stringify(answers, null, '  '));
             switch (answers.role) {
                 case 'Intern':
                     const intern = new Intern(answers.name, answers.id, answers.email, answers.school);
@@ -79,23 +80,25 @@ promptUser = () =>
                     console.log(allEmployees);
                     break;
                 case 'Manager':
-                    const manager = new Manager(answers.name, answers.id, answers.email, asnwers.office);
+                    const manager = new Manager(answers.name, answers.id, answers.email, answers.office);
                     allEmployees.push(manager);
                     console.log(allEmployees);
-                    break;
                 default:
-                    console.log("Invalid input value");
+                    console.log('Not valid entry.');
+
             }
-            if (answers.addmore === 'Yes'){
+            if (answers.addmore === "Yes") {
                 promptUser();
             } else {
-                const renderPage = render(allEmployees); 
+                const renderPage = render(allEmployees);
                 fs.writeFile(outputPath, renderPage, (err) => {
                     if (err) console.log(err)
                     console.log("html successfully rendered")
                 })
             }
         })
+
+promptUser();
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
