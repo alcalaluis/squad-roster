@@ -21,4 +21,7 @@
   * Email
   * University
 
+## **Link to Video of App Functionality:**
+
+https://youtu.be/5QerfnoZe8I
 
